@@ -33,7 +33,7 @@ LCP_alpha <- function(vs, alphas, alpha){
 }
 
 
-autoTune_distance <- function(V, n, hs, D, alpha = 0.05,  delta = 0.05, B = 10, trace = T, lambda = 1){
+autoTune_distance <- function(V, n, hs, D, alpha,  delta = 0.05, B = 10, trace = T, lambda = 1){
   n0 = length(V)
   J = length(hs)
   n1 = min(n0, n+1)
@@ -235,7 +235,7 @@ LCPmodule <- R6Class(classname = "LCP",
                        Smat = NULL,
                        
                        ##initialization
-                       initialize = function(H, V, h = 1,alpha = 0.05, type = "distance", invert_func = NULL){
+                       initialize = function(H, V, h = 1, alpha, type = "distance", invert_func = NULL){
                          self$H = H
                          self$h = h
                          self$V = c(V, Inf)
@@ -258,6 +258,7 @@ LCPmodule <- R6Class(classname = "LCP",
                          if(self$type == "distance"){
                            self$Hdistance = exp(-self$H/self$h)
                            self$Qcumsum = t(apply(self$Hdistance,1,cumsum))
+                           print(dim(self$Hdistance))
                          }else if(self$type == "neighbor"){
                            self$Hrank = t(apply(self$H,1,rank, ties_method = "random"))
                            self$idx_boundary = apply(self$Hrank,1,function(z) which(z == self$h))
