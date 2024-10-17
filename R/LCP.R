@@ -262,7 +262,8 @@ LCPmodule <- R6Class(classname = "LCP",
                         ordering=order(x)
                         emp_cdf=cumsum(w[ordering])
                         return emp_cdf
-                      }
+                       },
+                       
                        cumsum_unnormalized = function(){
                          if(self$type == "distance"){
                            self$Hdistance = exp(-self$H/self$h)
