@@ -227,13 +227,13 @@ LCPmodule <- R6Class(classname = "LCP",
                        qn0 = NULL,
                        alpha = NULL,
                        type = "distance",
+                       weights = NULL,
                        ##functions
                        invert_func = NULL,
                        id_low = NULL,
                        band_V = NULL,
                        band_Y = NULL,
                        Smat = NULL,
-                       weights = NULL,
                        
                        ##initialization
                        initialize = function(H, V, h = 1, alpha, type = "distance", invert_func = NULL, weights){
