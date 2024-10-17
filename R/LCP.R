@@ -257,7 +257,7 @@ LCPmodule <- R6Class(classname = "LCP",
                          self$id_low = id_low_search(self$V)
                        },
 
-                       weighted_cumsum <- function(x, w=weights){
+                       weighted_cumsum <- function(x, w=self$weights){
                         w=w/sum(w)
                         ordering=order(x)
                         emp_cdf=cumsum(w[ordering])
