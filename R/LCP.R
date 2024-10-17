@@ -268,7 +268,7 @@ LCPmodule <- R6Class(classname = "LCP",
                        cumsum_unnormalized = function(){
                          if(self$type == "distance"){
                            self$Hdistance = exp(-self$H/self$h)
-                           self$Qcumsum = t(apply(self$Hdistance,1,weighted_cumsum))
+                           self$Qcumsum = t(apply(self$Hdistance,1,self$weighted_cumsum))
                          }else if(self$type == "neighbor"){
                            self$Hrank = t(apply(self$H,1,rank, ties_method = "random"))
                            self$idx_boundary = apply(self$Hrank,1,function(z) which(z == self$h))
