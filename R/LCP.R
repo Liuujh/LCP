@@ -233,10 +233,9 @@ LCPmodule <- R6Class(classname = "LCP",
                        band_V = NULL,
                        band_Y = NULL,
                        Smat = NULL,
-                       weights = NULL
                        
                        ##initialization
-                       initialize = function(H, V, h = 1, alpha, type = "distance", invert_func = NULL, weights){
+                       initialize = function(H, V, h = 1, alpha, type = "distance", invert_func = NULL){
                          self$H = H
                          self$h = h
                          self$V = c(V, Inf)
@@ -244,7 +243,6 @@ LCPmodule <- R6Class(classname = "LCP",
                          self$alpha = alpha
                          self$type = type
                          self$invert_func = invert_func
-                         self$weights = weights
                          if(is.null(self$invert_func)){
                            #if no invert func is provided, use the identify function
                            self$invert_func = function(x){
@@ -256,19 +254,11 @@ LCPmodule <- R6Class(classname = "LCP",
                        lower_idx = function(){
                          self$id_low = id_low_search(self$V)
                        },
-
-                       weighted_cumsum <- function(x, w=self$weights){
-                        w=w/sum(w)
-                        ordering=order(x)
-                        emp_cdf=cumsum(w[ordering])
-                        return emp_cdf
-                       },
                        
                        cumsum_unnormalized = function(){
                          if(self$type == "distance"){
                            self$Hdistance = exp(-self$H/self$h)
-                           self$Qcumsum = t(apply(self$Hdistance,1,weighted_cumsum))
-                           print(dim(self$Hdistance))
+                           self$Qcumsum = t(apply(self$Hdistance,1,cumsum))
                          }else if(self$type == "neighbor"){
                            self$Hrank = t(apply(self$H,1,rank, ties_method = "random"))
                            self$idx_boundary = apply(self$Hrank,1,function(z) which(z == self$h))
