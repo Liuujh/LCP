@@ -233,6 +233,7 @@ LCPmodule <- R6Class(classname = "LCP",
                        band_V = NULL,
                        band_Y = NULL,
                        Smat = NULL,
+                       weights = NULL
                        
                        ##initialization
                        initialize = function(H, V, h = 1, alpha, type = "distance", invert_func = NULL){
@@ -254,10 +255,17 @@ LCPmodule <- R6Class(classname = "LCP",
                        lower_idx = function(){
                          self$id_low = id_low_search(self$V)
                        },
+
+                       weighted_cumsum <- function(x, w=weights){
+                        w=w/sum(w)
+                        ordering=order(x)
+                        emp_cdf=cumsum(w[ordering])
+                        return emp_cdf
+                      }
                        cumsum_unnormalized = function(){
                          if(self$type == "distance"){
                            self$Hdistance = exp(-self$H/self$h)
-                           self$Qcumsum = t(apply(self$Hdistance,1,cumsum))
+                           self$Qcumsum = t(apply(self$Hdistance,1,weighted_cumsum))
                            print(dim(self$Hdistance))
                          }else if(self$type == "neighbor"){
                            self$Hrank = t(apply(self$H,1,rank, ties_method = "random"))
