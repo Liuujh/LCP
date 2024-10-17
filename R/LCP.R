@@ -262,7 +262,7 @@ LCPmodule <- R6Class(classname = "LCP",
                         w=w/sum(w)
                         ordering=order(x)
                         emp_cdf=cumsum(w[ordering])
-                        return emp_cdf
+                        return(emp_cdf)
                        },
                        
                        cumsum_unnormalized = function(){
