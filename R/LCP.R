@@ -233,9 +233,10 @@ LCPmodule <- R6Class(classname = "LCP",
                        band_V = NULL,
                        band_Y = NULL,
                        Smat = NULL,
+                       weights = NULL
                        
                        ##initialization
-                       initialize = function(H, V, h = 1, alpha, type = "distance", invert_func = NULL){
+                       initialize = function(H, V, h = 1, alpha, type = "distance", invert_func = NULL, weights){
                          self$H = H
                          self$h = h
                          self$V = c(V, Inf)
@@ -243,6 +244,8 @@ LCPmodule <- R6Class(classname = "LCP",
                          self$alpha = alpha
                          self$type = type
                          self$invert_func = invert_func
+                         self$weights = weights
+                         
                          if(is.null(self$invert_func)){
                            #if no invert func is provided, use the identify function
                            self$invert_func = function(x){
