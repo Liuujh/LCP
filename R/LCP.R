@@ -259,7 +259,7 @@ LCPmodule <- R6Class(classname = "LCP",
                        },
                        
                        weighted_cumsum = function(x, w=self$weights){
-                         if (w == NULL){
+                         if (is.null(w)){
                            return (cumsum(x))
                            }
                          else{
