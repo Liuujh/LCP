@@ -259,10 +259,15 @@ LCPmodule <- R6Class(classname = "LCP",
                        },
                        
                        weighted_cumsum = function(x, w=self$weights){
-                        w=w/sum(w)
-                        ordering=order(x)
-                        emp_cdf=cumsum(w[ordering])
-                        return(emp_cdf)
+                         if (weights == NULL){
+                           return (cumsum(x))
+                           }
+                         else{
+                           w=w/sum(w)
+                           ordering=order(x)
+                           emp_cdf=cumsum(w[ordering])
+                           return(emp_cdf)
+                        }
                        },
                        
                        cumsum_unnormalized = function(){
@@ -277,7 +282,7 @@ LCPmodule <- R6Class(classname = "LCP",
                            for(i in 1:n){
                              tmp = self$Hrank[i,]
                              self$Hrank[i,tmp  <= self$h] = 1
-                             self$Hrank[i,tmp  >self$h] = 0
+                             self$Hrank[i,tmp  > self$h] = 0
                            }
                            self$Qcumsum = t(apply(self$Hrank,1,self$weighted_cumsum))
                          }else{
