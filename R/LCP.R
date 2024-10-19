@@ -279,7 +279,7 @@ LCPmodule <- R6Class(classname = "LCP",
                              self$Hrank[i,tmp  <= self$h] = 1
                              self$Hrank[i,tmp  >self$h] = 0
                            }
-                           self$Qcumsum = t(apply(self$Hrank,1,cumsum))
+                           self$Qcumsum = t(apply(self$Hrank,1,self$weighted_cumsum))
                          }else{
                            stop("unsupported localizer type.")
                          }
