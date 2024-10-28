@@ -33,7 +33,7 @@ LCP_alpha <- function(vs, alphas, alpha){
 }
 
 
-autoTune_distance <- function(V, n, hs, D, alpha,  delta = 0.05, B = 10, trace = T, lambda = 1, func_weighted_cumsum){
+autoTune_distance <- function(V, n, hs, D, alpha,  delta = 0.05, B = 10, trace = T, lambda = 1){
   n0 = length(V)
   J = length(hs)
   n1 = min(n0, n+1)
