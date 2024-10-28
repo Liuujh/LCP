@@ -62,7 +62,7 @@ autoTune_distance <- function(V, n, hs, D, alpha,  delta = 0.05, B = 10, trace =
     for(j in 1:J){
       h = hs[j]
       H = exp(-Db/h)
-      Qcumsumb = t(apply(H,1,func_weighted_cumsum))
+      Qcumsumb = t(apply(H,1,cumsum))
       ret1 = LCP_construction_distance_loop(V = Vb,  Qcumsum = Qcumsumb, H = H)
       tmp = rep(0, n0)
       for(i in 1:n0){
@@ -91,7 +91,7 @@ autoTune_distance <- function(V, n, hs, D, alpha,  delta = 0.05, B = 10, trace =
         H = exp(-Db/h)
         Hnew = exp(-Dnew/h)
         HnewT = exp(-DnewT/h)
-        Qcumsumb = t(apply(H,1,func_weighted_cumsum))
+        Qcumsumb = t(apply(H,1,cumsum))
         q_low = q_low_compute(id_low[-length(id_low)],  Qcumsumb)
         qn =  Qcumsumb[,n]
         ret = LCP_construction_path(alpha = alpha, V = Vb,  id_low = id_low, q_low = q_low,  qn = qn, 
@@ -321,10 +321,10 @@ LCPmodule <- R6Class(classname = "LCP",
 
                        },
                        
-                       LCP_auto_tune = function(V0, H0, hs, B = 5, delta =0.05, lambda = 0, trace = TRUE){
+                       LCP_auto_tune = function(V0, H0, hs, B = 5, delta = 0.05, lambda = 0, trace = TRUE){
                          if(self$type == "distance"){
                            ret = autoTune_distance(V = V0, n = self$n, hs = hs, D = H0, alpha = self$alpha,  
-                                                   delta =delta, B = B, trace = trace, lambda = lambda, func_weighted_cumsum = self$weighted_cumsum)
+                                                   delta =delta, B = B, trace = trace, lambda = lambda)
                          }else{
                            stop("unsupported localizeer for auto-tune.")
                          }
