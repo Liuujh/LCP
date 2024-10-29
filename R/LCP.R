@@ -264,7 +264,7 @@ LCPmodule <- R6Class(classname = "LCP",
                            }
                          else{
                            w=w/sum(w)
-                           emp_cdf=cumsum(w) * (1 + length(w))
+                           emp_cdf=cumsum(w * x)
                            return(emp_cdf)
                         }
                        },
