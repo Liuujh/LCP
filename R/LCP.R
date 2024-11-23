@@ -263,16 +263,28 @@ LCPmodule <- R6Class(classname = "LCP",
                            return (cumsum(x))
                            }
                          else{
-                           w=w / sum(w)
-                           emp_cdf=cumsum(w * sum(x))
-                           return(emp_cdf)
+                           ordering=order(x)
+                           emp_cdf=cumsum(w[ordering])
+                           return(emp_cdf )
                         }
                        },
                        
-                       cumsum_unnormalized = function(){
+                       cumsum_unnormalized_LCP_construction = function(Hnew, HnewT){
+                         if(is.null(dim(Hnew))){
+                           Hnew = matrix(Hnew, nrow = 1)
+                           HnewT  = matrix(HnewT, ncol = 1)
+                         }
                          if(self$type == "distance"){
                            self$Hdistance = exp(-self$H/self$h)
-                           self$Qcumsum = t(apply(self$Hdistance,1,self$weighted_cumsum))
+                           Hnew = exp(-Hnew/self$h)
+                           HnewT = exp(-HnewT/self$h)
+                           for (i in 1:nrow(self$Hdistance)){
+                             
+                           }
+                           Qcumsum0 = t(apply(cbind(self$Hdistance,HnewT),1,self$weighted_cumsum))
+                           self$Qcumsum = Qcumsum0[,1:ncol(self$Hdistance)]
+                           HnewT = Qcumsum0[,ncol(Qcumsum0)]
+                           Hnew = t(HnewT)
                          }else if(self$type == "neighbor"){
                            self$Hrank = t(apply(self$H,1,rank, ties_method = "random"))
                            self$idx_boundary = apply(self$Hrank,1,function(z) which(z == self$h))
@@ -289,6 +301,23 @@ LCPmodule <- R6Class(classname = "LCP",
                          }
                          self$qlow0 = q_low_compute(self$id_low[-length(self$id_low)],  self$Qcumsum)
                          self$qn0 = self$Qcumsum[,self$n]
+                                                          
+                         if(self$type == "neighbor"){
+                           ret = LCP_construction_path(alpha = self$alpha,V = self$V, id_low = self$id_low,
+                                                       q_low = self$qlow0, qn = self$qn0, 
+                                                       Hnew = Hnew, HnewT = HnewT, type = self$type,
+                                                       neighbor_size = self$h, idx_boundary = self$idx_boundary,
+                                                       size_boundary = self$size_boundary ,
+                                                       distance_boundary = self$distance_boundary)
+             
+                         }else{
+
+                           ret = LCP_construction_path(alpha = self$alpha, V = self$V, id_low = self$id_low,
+                                                       q_low = self$qlow0, qn = self$qn0, 
+                                                       Hnew = Hnew, HnewT = HnewT, type = self$type)
+                         }
+                         self$band_V = ret$deltaLCP
+                         self$Smat = ret$Smat                             
                        },
 
                        LCP_construction = function(Hnew, HnewT){
