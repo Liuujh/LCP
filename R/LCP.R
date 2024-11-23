@@ -258,14 +258,14 @@ LCPmodule <- R6Class(classname = "LCP",
                          self$id_low = id_low_search(self$V)
                        },
                        
-                       weighted_cumsum = function(x, w=self$weights){
+                       weighted_cumsum = function(x, w){
                          if (is.null(w)){
                            return (cumsum(x))
                            }
                          else{
                            ordering=order(x)
                            emp_cdf=cumsum(w[ordering])
-                           return(emp_cdf )
+                           return(emp_cdf)
                         }
                        },
                        
@@ -277,12 +277,15 @@ LCPmodule <- R6Class(classname = "LCP",
                          if(self$type == "distance"){
                            self$Hdistance = exp(-self$H/self$h)
                            Hnew = exp(-Hnew/self$h)
-                           print(dim(Hnew))
                            HnewT = exp(-HnewT/self$h)
-                           print(dim(HnewT))
-                           Qcumsum0 = t(apply(cbind(self$Hdistance,HnewT),1,self$weighted_cumsum))
-                           self$Qcumsum = Qcumsum0[,1:ncol(self$Hdistance)]
-                           HnewT = Qcumsum0[,ncol(Qcumsum0)]
+                           n = nrow(self$Hdistance)
+                           for (i in 1:nrow(Hnew)){
+                             weights=c(self$weights[1:n],self$weights[n+i])
+                             weights = weights / sum(weights)
+                             Qcumsum0 = t(apply(cbind(self$Hdistance,HnewT[, i]),1,self$weighted_cumsum, w=weights))
+                             self$Qcumsum = Qcumsum0[,1:n]
+                             HnewT[, i] = Qcumsum0[,(n+1)]
+                           }
                            Hnew = t(HnewT)
                          }else if(self$type == "neighbor"){
                            self$Hrank = t(apply(self$H,1,rank, ties_method = "random"))
@@ -306,7 +309,7 @@ LCPmodule <- R6Class(classname = "LCP",
                                                        q_low = self$qlow0, qn = self$qn0, 
                                                        Hnew = Hnew, HnewT = HnewT, type = self$type,
                                                        neighbor_size = self$h, idx_boundary = self$idx_boundary,
-                                                       size_boundary = self$size_boundary ,
+                                                       size_boundary = self$size_boundary,
                                                        distance_boundary = self$distance_boundary)
              
                          }else{
