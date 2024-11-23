@@ -62,7 +62,7 @@ autoTune_distance <- function(V, n, hs, D, alpha,  delta = 0.05, B = 10, trace =
     for(j in 1:J){
       h = hs[j]
       H = exp(-Db/h)
-      Qcumsumb = t(apply(H,1,func))
+      Qcumsumb = t(apply(H,1,cumsum))
       ret1 = LCP_construction_distance_loop(V = Vb,  Qcumsum = Qcumsumb, H = H)
       tmp = rep(0, n0)
       for(i in 1:n0){
@@ -91,7 +91,7 @@ autoTune_distance <- function(V, n, hs, D, alpha,  delta = 0.05, B = 10, trace =
         H = exp(-Db/h)
         Hnew = exp(-Dnew/h)
         HnewT = exp(-DnewT/h)
-        Qcumsumb = t(apply(H,1,func))
+        Qcumsumb = t(apply(H,1,cumsum))
         q_low = q_low_compute(id_low[-length(id_low)],  Qcumsumb)
         qn =  Qcumsumb[,n]
         ret = LCP_construction_path(alpha = alpha, V = Vb,  id_low = id_low, q_low = q_low,  qn = qn, 
@@ -277,10 +277,9 @@ LCPmodule <- R6Class(classname = "LCP",
                          if(self$type == "distance"){
                            self$Hdistance = exp(-self$H/self$h)
                            Hnew = exp(-Hnew/self$h)
+                           print(dim(Hnew))
                            HnewT = exp(-HnewT/self$h)
-                           for (i in 1:nrow(self$Hdistance)){
-                             
-                           }
+                           print(dim(HnewT))
                            Qcumsum0 = t(apply(cbind(self$Hdistance,HnewT),1,self$weighted_cumsum))
                            self$Qcumsum = Qcumsum0[,1:ncol(self$Hdistance)]
                            HnewT = Qcumsum0[,ncol(Qcumsum0)]
