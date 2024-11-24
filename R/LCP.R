@@ -264,7 +264,7 @@ LCPmodule <- R6Class(classname = "LCP",
                            }
                          else{
                            ordering=order(x)
-                           emp_cdf=cumsum(w[ordering])
+                           emp_cdf=cumsum(w[ordering] * x)
                            return(emp_cdf)
                         }
                        },
@@ -280,11 +280,11 @@ LCPmodule <- R6Class(classname = "LCP",
                            HnewT = exp(-HnewT/self$h)
                            n = nrow(self$Hdistance)
                            for (i in 1:nrow(Hnew)){
-                             weights=c(self$weights[1:n],self$weights[n+i])
-                             weights = weights / sum(weights)
-                             Qcumsum0 = t(apply(cbind(self$Hdistance,HnewT[, i]),1,self$weighted_cumsum, w=weights))
+                             weights = c(self$weights[1:n],self$weights[n+i])
+                             weights0 = weights / sum(weights)
+                             Qcumsum = t(apply(cbind(self$Hdistance,HnewT[, i]),1,self$weighted_cumsum, w=weights0))
                              self$Qcumsum = Qcumsum0[,1:n]
-                             HnewT[, i] = Qcumsum0[,(n+1)]
+                             HnewT[, i] = weights0[n+1] * HnewT[, i]
                            }
                            Hnew = t(HnewT)
                          }else if(self$type == "neighbor"){
