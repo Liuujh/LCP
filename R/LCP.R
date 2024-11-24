@@ -281,8 +281,9 @@ LCPmodule <- R6Class(classname = "LCP",
                            n = nrow(self$Hdistance)
                            for (i in 1:nrow(Hnew)){
                              weights = c(self$weights[1:n],self$weights[n+i])
-                             weights0 = weights / sum(weights)
-                             HnewT[, i] = weights0[n+1] * HnewT[, i]
+                             weights = weights / sum(weights)
+                             weights0 = weights[1:n]
+                             HnewT[, i] = weights[n+1] * HnewT[, i]
                            }
                            Hnew = t(HnewT)
                            self$Qcumsum = t(apply(self$Hdistance,1,self$weighted_cumsum, w=weights0))
