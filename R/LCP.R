@@ -282,11 +282,10 @@ LCPmodule <- R6Class(classname = "LCP",
                            for (i in 1:nrow(Hnew)){
                              weights = c(self$weights[1:n],self$weights[n+i])
                              weights0 = weights / sum(weights)
-                             Qcumsum = t(apply(cbind(self$Hdistance,HnewT[, i]),1,self$weighted_cumsum, w=weights0))
-                             self$Qcumsum = Qcumsum0[,1:n]
                              HnewT[, i] = weights0[n+1] * HnewT[, i]
                            }
                            Hnew = t(HnewT)
+                           self$Qcumsum = t(apply(self$Hdistance,1,self$weighted_cumsum, w=weights0))
                          }else if(self$type == "neighbor"){
                            self$Hrank = t(apply(self$H,1,rank, ties_method = "random"))
                            self$idx_boundary = apply(self$Hrank,1,function(z) which(z == self$h))
